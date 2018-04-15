@@ -9,6 +9,10 @@ public class RichWord {
 	private String parola;
 	private boolean corretta;
 	
+	public RichWord() {
+		
+	}
+	
 	public RichWord(String parola, boolean corretta) {
 		this.parola = parola;
 		this.corretta = corretta;

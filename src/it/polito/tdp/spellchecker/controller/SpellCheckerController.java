@@ -22,6 +22,11 @@ import javafx.scene.control.Label;
 public class SpellCheckerController {
 
 	private Dictionary modello;
+	private List<String> inputTextList;
+	
+	// decido la ricerca che voglio fare
+	private final static boolean dichotomicSearch = false;
+	private final static boolean linearSearch = false;
 	
     @FXML // ResourceBundle that was given to the FXMLLoader
     private ResourceBundle resources;
@@ -72,24 +77,36 @@ public class SpellCheckerController {
     	String reg = "[.,\\/#!?$%\\^&\\*;:{}=\\-_'~()\\[\\]]";
     	testo = testo.replaceAll(reg, "");
     	
-    	List<String> inputTextList = new LinkedList<String>();
+    	inputTextList = new LinkedList<String>();
     	StringTokenizer st = new StringTokenizer(testo, " ");
     	while (st.hasMoreTokens())
     		inputTextList.add(st.nextToken());
     	
-    	List<RichWord> testoChecked = modello.spellCheckText(inputTextList);
+    	long start = System.nanoTime();
+		List<RichWord> testoChecked;
+		if (dichotomicSearch) {
+			testoChecked = modello.spellCheckTextDichotomic(inputTextList);
+		} else if (linearSearch) {
+			testoChecked = modello.spellCheckTextLinear(inputTextList);
+		} else {
+			testoChecked = modello.spellCheckText(inputTextList);
+		}
+    	long stop = System.nanoTime();
+    	
     	int numErrori = 0;  String ww = "";
     	for (RichWord r : testoChecked) {
     		if (! r.isCorretta()) {
     			numErrori++;
-    			ww += r.getParola() + "\n";
-    		     
+    			ww += r.getParola() + "\n";  
     		}
     	}
+    	
     	txtParoleErrate.clear();
     	txtParoleErrate.appendText(ww);
     	txtLabErr.setText("");
     	txtLabErr.setText("The text contains " + numErrori + " errors");
+    	txtLabTmp.setText("");
+    	txtLabTmp.setText("Spell check completed in " + (stop - start)/1e9 + " seconds");
     	
     }
     
