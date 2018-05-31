@@ -139,5 +139,7 @@ public class SpellCheckerController {
 		btnLanguage.getItems().add("Italian");
 		btnLanguage.getItems().add("English");
 		
+		btnLanguage.setPromptText("English");
+		
 	}
 }
